@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<!-- saved from url=(0022)http://localhost:3000/ -->
+<html lang="id"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="BPKAScan — Sistem manajemen dokumen scan profesional dengan upload PDF, integrasi scanner fisik, OCR, dan log aktivitas.">
+  <title>BPKAScan — Sistem Manajemen Dokumen Scan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com/">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+  <link href="./BPKAScan — Sistem Manajemen Dokumen Scan_files/css2" rel="stylesheet">
+  <script src="./BPKAScan — Sistem Manajemen Dokumen Scan_files/lucide@latest"></script>
+  <script src="./BPKAScan — Sistem Manajemen Dokumen Scan_files/tesseract.min.js"></script>
+  <script src="./BPKAScan — Sistem Manajemen Dokumen Scan_files/dexie.min.js"></script>
+  <script src="./BPKAScan — Sistem Manajemen Dokumen Scan_files/jspdf.umd.min.js"></script>
+  <link rel="stylesheet" href="./BPKAScan — Sistem Manajemen Dokumen Scan_files/style.css">
+<style>@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }</style></head>
+<body class="theme-dark">
+
+  <!-- Login screen removed -->
+
+  <!-- ===== MAIN APP ===== -->
+  <div id="app-container" class="app-container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand" style="display: flex; flex-direction: row; align-items: center; gap: 12px; padding: 1.2rem 1.5rem;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <img src="./BPKAScan — Sistem Manajemen Dokumen Scan_files/Coat_of_arms_of_Aceh.svg" alt="Pancacita" style="height: 36px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">
+          <img src="./BPKAScan — Sistem Manajemen Dokumen Scan_files/1_logo_bpka_blue_yellow1.png" alt="BPKA" style="height: 32px; width: auto; object-fit: contain;">
+        </div>
+        <span class="brand-name" style="font-size: 1.25rem;">BPKA<span>Scan</span></span>
+      </div>
+
+      <nav class="sidebar-menu">
+        <button class="menu-item active" data-tab="dashboard" id="nav-dashboard">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="layout-dashboard" aria-hidden="true" class="lucide lucide-layout-dashboard"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg>
+          <span>Dashboard</span>
+        </button>
+        <button class="menu-item" data-tab="library" id="nav-library">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="folder-open" aria-hidden="true" class="lucide lucide-folder-open"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"></path></svg>
+          <span>Perpustakaan</span>
+          <span class="menu-badge" id="lib-badge">0</span>
+        </button>
+        <button class="menu-item" data-tab="scanner" id="nav-scanner">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="scan" aria-hidden="true" class="lucide lucide-scan"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path></svg>
+          <span>Scan &amp; Upload</span>
+        </button>
+
+        <button class="menu-item" data-tab="logs" id="nav-logs">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="activity" aria-hidden="true" class="lucide lucide-activity"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"></path></svg>
+          <span>Log Aktivitas</span>
+          <span class="menu-badge badge-blue" id="log-badge">0</span>
+        </button>
+        <button class="menu-item" data-tab="settings" id="nav-settings">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="settings" aria-hidden="true" class="lucide lucide-settings"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          <span>Pengaturan</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="theme-toggle-container">
+          <span class="theme-label text-muted">Tema</span>
+          <div class="theme-switch">
+            <button class="theme-btn active" data-theme="dark" title="Dark Mode"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="moon" aria-hidden="true" class="lucide lucide-moon"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"></path></svg></button>
+            <button class="theme-btn" data-theme="light" title="Light Mode"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="sun" aria-hidden="true" class="lucide lucide-sun"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg></button>
+          </div>
+        </div>
+        <div class="user-profile" id="sidebar-user-profile">
+          <div class="profile-avatar-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="user-circle" aria-hidden="true" class="lucide lucide-user-circle"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="10" r="3"></circle><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"></path></svg>
+          </div>
+          <div class="profile-info">
+            <span class="profile-name" id="sidebar-username">Administrator</span>
+            <span class="profile-tag" id="sidebar-role">Admin</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <header class="header">
+        <div class="header-left">
+          <button class="sidebar-toggle-btn" id="sidebar-toggle" aria-label="Toggle Sidebar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="panel-left" aria-hidden="true" class="lucide lucide-panel-left"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M9 3v18"></path></svg>
+          </button>
+          <div>
+            <h1 class="page-title" id="page-title">Dashboard</h1>
+            <p class="page-subtitle text-muted" id="page-subtitle">Selamat datang! Kelola dan cari dokumen hasil scan Anda.</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <div class="search-box">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="search" aria-hidden="true" class="lucide lucide-search search-icon"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg>
+            <input type="text" id="global-search" placeholder="Cari dokumen, nomor, pengguna...">
+          </div>
+          <button class="btn btn-primary btn-glow" id="quick-scan-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="plus" aria-hidden="true" class="lucide lucide-plus"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+            <span>Scan Dokumen</span>
+          </button>
+          <div class="header-notif" id="header-notif" title="Notifikasi">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="bell" aria-hidden="true" class="lucide lucide-bell"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg>
+            <span class="notif-dot hidden" id="notif-dot"></span>
+          </div>
+        </div>
+      </header>
+
+      <div class="content-body">
+
+        <!-- ====== DASHBOARD TAB ====== -->
+        <div id="tab-dashboard" class="tab-panel active">
+          <div class="stats-grid">
+            <div class="card stat-card gradient-emerald">
+              <div class="stat-header">
+                <span class="stat-label">Total Dokumen</span>
+                <div class="stat-icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="file-text" aria-hidden="true" class="lucide lucide-file-text"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"></path><path d="M14 2v5a1 1 0 0 0 1 1h5"></path><path d="M10 9H8"></path><path d="M16 13H8"></path><path d="M16 17H8"></path></svg></div>
+              </div>
+              <div class="stat-value" id="stat-total-docs">0</div>
+              <div class="stat-footer text-muted" id="stat-recent-add">Belum ada dokumen baru</div>
+            </div>
+            <div class="card stat-card gradient-blue">
+              <div class="stat-header">
+                <span class="stat-label">Scan Hari Ini</span>
+                <div class="stat-icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="scan" aria-hidden="true" class="lucide lucide-scan"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path></svg></div>
+              </div>
+              <div class="stat-value" id="stat-scan-today">0</div>
+              <div class="stat-footer text-muted">Dari mesin scanner</div>
+            </div>
+            <div class="card stat-card gradient-purple">
+              <div class="stat-header">
+                <span class="stat-label">Upload PDF</span>
+                <div class="stat-icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="file-up" aria-hidden="true" class="lucide lucide-file-up"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"></path><path d="M14 2v5a1 1 0 0 0 1 1h5"></path><path d="M12 12v6"></path><path d="m15 15-3-3-3 3"></path></svg></div>
+              </div>
+              <div class="stat-value" id="stat-upload-count">0</div>
+              <div class="stat-footer text-muted">Total file diunggah</div>
+            </div>
+            <div class="card stat-card border-glow">
+              <div class="stat-header">
+                <span class="stat-label">Kapasitas Tersimpan</span>
+                <div class="stat-icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="hard-drive" aria-hidden="true" class="lucide lucide-hard-drive"><path d="M10 16h.01"></path><path d="M2.212 11.577a2 2 0 0 0-.212.896V18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5.527a2 2 0 0 0-.212-.896L18.55 5.11A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path><path d="M21.946 12.013H2.054"></path><path d="M6 16h.01"></path></svg></div>
+              </div>
+              <div class="stat-value" id="stat-storage-bytes-val">0 KB</div>
+              <div class="stat-footer">
+                <div class="progress-bar-container">
+                  <div class="progress-bar-fill" id="storage-progress" style="width: 0%;"></div>
+                </div>
+                <span id="stat-storage-percent" class="text-muted text-xs mt-1">0% dari 500 MB</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scanner Status Panel -->
+          <div class="dashboard-mid-grid">
+            <div class="card table-card">
+              <div class="card-header flex-row-between">
+                <div>
+                  <h3 class="card-title">Unggahan &amp; Scan Terbaru</h3>
+                  <p class="card-desc text-muted">5 dokumen terbaru yang masuk ke sistem</p>
+                </div>
+                <button class="btn btn-outline btn-sm" id="view-all-docs-btn">
+                  <span>Lihat Semua</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" aria-hidden="true" class="lucide lucide-arrow-right"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                </button>
+              </div>
+              <div class="table-responsive">
+                <table class="doc-table">
+                  <thead>
+                    <tr>
+                      <th>No. Dokumen</th>
+                      <th>Nama File</th>
+                      <th>Sumber</th>
+                      <th>Tanggal Scan</th>
+                      <th>Pengguna</th>
+                      <th>Status</th>
+                      <th class="text-center">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashboard-recent-table-body">
+                    <tr class="empty-row">
+                      <td colspan="7" class="text-center text-muted">Belum ada dokumen. Silakan upload atau scan dokumen pertama Anda!</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card flex-col-between card-right">
+              <div>
+                <h3 class="card-title">Status Scanner</h3>
+                <p class="card-desc text-muted mb-4">Scanner yang terhubung ke sistem</p>
+                <div class="scanner-list" id="dashboard-scanner-list">
+                  <div class="scanner-item-empty text-muted text-sm">Tidak ada scanner terdaftar.</div>
+                </div>
+              </div>
+              <div class="quick-scanner-promo mt-4">
+                <h4 class="promo-title">Scan Cepat</h4>
+                <p class="promo-desc text-muted">Hubungkan scanner dan mulai digitalisasi dokumen Anda sekarang.</p>
+                <button class="btn btn-secondary w-full justify-center mt-3" id="dashboard-scan-btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="scan" aria-hidden="true" class="lucide lucide-scan"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path></svg>
+                  <span>Buka Halaman Scan</span>
+                </button>
+                <button class="btn btn-outline w-full justify-center mt-2" id="dashboard-upload-btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="file-up" aria-hidden="true" class="lucide lucide-file-up"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"></path><path d="M14 2v5a1 1 0 0 0 1 1h5"></path><path d="M12 12v6"></path><path d="m15 15-3-3-3 3"></path></svg>
+                  <span>Upload PDF Manual</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ====== LIBRARY TAB ====== -->
+        <div id="tab-library" class="tab-panel">
+          <div class="card library-card">
+            <div class="card-header flex-column-md-row">
+              <div class="table-header-left" style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                <div>
+                  <h3 class="card-title">Daftar Dokumen</h3>
+                  <p class="card-desc text-muted">Kelola, preview, unduh, dan hapus dokumen</p>
+                </div>
+                <div>
+                  <input type="file" id="direct-upload-input" accept="application/pdf,image/*" multiple="" class="hidden">
+                  <button class="btn btn-primary" onclick="document.getElementById(&#39;direct-upload-input&#39;).click()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="upload-cloud" aria-hidden="true" class="lucide lucide-upload-cloud"><path d="M12 13v8"></path><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="m8 17 4-4 4 4"></path></svg>
+                    <span>Upload Langsung</span>
+                  </button>
+                </div>
+              </div>
+              <div class="library-filters">
+                <div class="filter-search">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="search" aria-hidden="true" class="lucide lucide-search"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg>
+                  <input type="text" id="library-search" placeholder="Cari nomor, nama file, pengguna...">
+                </div>
+                <div class="filter-dropdowns">
+                  <select id="library-filter-source" class="custom-select-mini">
+                    <option value="all">Semua Sumber</option>
+                    <option value="scan">Hasil Scan</option>
+                    <option value="upload">Upload PDF</option>
+                    <option value="camera">Kamera</option>
+                  </select>
+                  <select id="library-filter-status" class="custom-select-mini">
+                    <option value="all">Semua Status</option>
+                    <option value="Tersimpan">Tersimpan</option>
+                    <option value="Diproses">Diproses</option>
+                    <option value="Diarsipkan">Diarsipkan</option>
+                  </select>
+                  <select id="library-sort-by" class="custom-select-mini">
+                    <option value="newest">Terbaru</option>
+                    <option value="oldest">Terlama</option>
+                    <option value="name_asc">Nama (A-Z)</option>
+                    <option value="size_desc">Ukuran Terbesar</option>
+                  </select>
+                </div>
+                <div class="view-toggle-buttons">
+                  <button class="view-btn active" id="view-grid-btn" title="Grid View"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="layout-grid" aria-hidden="true" class="lucide lucide-layout-grid"><rect width="7" height="7" x="3" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="14" rx="1"></rect><rect width="7" height="7" x="3" y="14" rx="1"></rect></svg></button>
+                  <button class="view-btn" id="view-list-btn" title="List View"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="list" aria-hidden="true" class="lucide lucide-list"><path d="M3 5h.01"></path><path d="M3 12h.01"></path><path d="M3 19h.01"></path><path d="M8 5h13"></path><path d="M8 12h13"></path><path d="M8 19h13"></path></svg></button>
+                </div>
+              </div>
+            </div>
+            <div class="documents-display grid-view" id="documents-container">
+              <div class="empty-state-container">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="folder-search" aria-hidden="true" class="lucide lucide-folder-search empty-icon"><path d="M10.7 20H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v4.1"></path><path d="m21 21-1.9-1.9"></path><circle cx="17" cy="17" r="3"></circle></svg>
+                <h3>Tidak Ada Dokumen</h3>
+                <p class="text-muted">Belum ada dokumen yang tersimpan. Upload PDF atau lakukan scan dokumen.</p>
+                <button class="btn btn-primary mt-4" id="empty-state-upload-btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="plus" aria-hidden="true" class="lucide lucide-plus"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+                  <span>Upload Dokumen Baru</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ====== SCANNER TAB ====== -->
+        <div id="tab-scanner" class="tab-panel">
+          <div class="scanner-grid">
+
+            <!-- Left: Scanner Control -->
+            <div class="card scanner-preview-card">
+              <div class="card-header">
+                <h3 class="card-title">Mesin Scanner</h3>
+                <p class="card-desc text-muted">Hubungkan ke mesin scanner TWAIN/SANE/WIA lalu tekan Scan</p>
+                <div class="input-mode-tabs mt-4">
+                  <button class="mode-tab active" id="tab-mode-hw-scan">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="printer" aria-hidden="true" class="lucide lucide-printer"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"></path><rect x="6" y="14" width="12" height="8" rx="1"></rect></svg>
+                    <span>Scanner Fisik</span>
+                  </button>
+                  <button class="mode-tab" id="tab-mode-camera">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="camera" aria-hidden="true" class="lucide lucide-camera"><path d="M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z"></path><circle cx="12" cy="13" r="3"></circle></svg>
+                    <span>Kamera Webcam</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Hardware Scanner Panel -->
+              <div id="hw-scan-workzone" class="workzone-panel active">
+                <div class="scanner-connect-panel">
+                  <div class="scanner-status-display" id="scanner-status-display">
+                    <div class="scanner-icon-anim">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="printer" aria-hidden="true" class="lucide lucide-printer"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"></path><rect x="6" y="14" width="12" height="8" rx="1"></rect></svg>
+                    </div>
+                    <div class="scanner-status-info">
+                      <span class="scanner-status-label" id="scanner-status-label">Belum Terhubung</span>
+                      <span class="scanner-status-dot offline" id="scanner-status-dot"></span>
+                    </div>
+                  </div>
+
+                  <div class="form-group mt-4">
+                    <label for="scanner-select">Pilih Scanner</label>
+                    <select id="scanner-select" class="form-control">
+                      <option value="">-- Memuat daftar scanner... --</option>
+                    </select>
+                  </div>
+
+                  <div class="scan-options-grid mt-3">
+                    <div class="form-group">
+                      <label for="scan-resolution">Resolusi (DPI)</label>
+                      <select id="scan-resolution" class="form-control">
+                        <option value="150">150 DPI (Cepat)</option>
+                        <option value="300" selected="">300 DPI (Standar)</option>
+                        <option value="600">600 DPI (Tinggi)</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="scan-color">Mode Warna</label>
+                      <select id="scan-color" class="form-control">
+                        <option value="color">Berwarna</option>
+                        <option value="grayscale">Abu-Abu</option>
+                        <option value="bw">Hitam &amp; Putih</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="scan-paper">Ukuran Kertas</label>
+                      <select id="scan-paper" class="form-control">
+                        <option value="A4">A4</option>
+                        <option value="A3">A3</option>
+                        <option value="Letter">Letter</option>
+                        <option value="Legal">Legal</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="scan-duplex">Sisi Scan</label>
+                      <select id="scan-duplex" class="form-control">
+                        <option value="simplex">Satu Sisi</option>
+                        <option value="duplex">Dua Sisi (Duplex)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="scan-action-row mt-4">
+                    <button class="btn btn-outline" id="btn-refresh-scanners">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="refresh-cw" aria-hidden="true" class="lucide lucide-refresh-cw"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 16H3v5"></path></svg>
+                      <span>Refresh</span>
+                    </button>
+                    <button class="btn btn-primary btn-glow flex-1 justify-center" id="btn-start-scan" disabled="">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="scan" aria-hidden="true" class="lucide lucide-scan"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path></svg>
+                      <span>Mulai Scan</span>
+                    </button>
+                  </div>
+
+                  <!-- Scan Progress -->
+                  <div class="scan-progress-area hidden" id="scan-progress-area">
+                    <div class="scan-progress-line">
+                      <div class="scan-progress-beam" id="scan-progress-beam"></div>
+                    </div>
+                    <p class="text-muted text-sm text-center mt-2" id="scan-progress-text">Mempersiapkan scanner...</p>
+                  </div>
+
+                  <!-- Scan Result Preview -->
+                  <div class="scan-result-preview hidden" id="scan-result-preview">
+                    <div class="scan-result-header">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check-circle" aria-hidden="true" class="lucide lucide-check-circle text-success"><path d="M21.801 10A10 10 0 1 1 17 3.335"></path><path d="m9 11 3 3L22 4"></path></svg>
+                      <span class="text-success">Scan Selesai! PDF Berhasil Dibuat.</span>
+                    </div>
+                    <img id="scan-result-img" src="http://localhost:3000/" alt="Hasil Scan" class="scan-result-img">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Camera Webcam Panel -->
+              <div id="camera-workzone" class="workzone-panel">
+                <div class="camera-stream-container">
+                  <video id="webcam-video" autoplay="" playsinline="" muted="" class="webcam-feed"></video>
+                  <div class="camera-overlay">
+                    <div class="scan-guide-box"></div>
+                  </div>
+                  <div class="camera-error-msg hidden" id="camera-error">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="alert-triangle" aria-hidden="true" class="lucide lucide-alert-triangle"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>
+                    <p>Kamera tidak dapat diakses.</p>
+                    <button class="btn btn-sm btn-outline mt-2" id="retry-camera-btn">Coba Lagi</button>
+                  </div>
+                </div>
+                <div class="camera-controls mt-4">
+                  <select id="camera-select" class="custom-select-mini w-full">
+                    <option value="">Memuat kamera...</option>
+                  </select>
+                  <button class="btn btn-primary btn-glow" id="capture-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="aperture" aria-hidden="true" class="lucide lucide-aperture"><circle cx="12" cy="12" r="10"></circle><path d="m14.31 8 5.74 9.94"></path><path d="M9.69 8h11.48"></path><path d="m7.38 12 5.74-9.94"></path><path d="M9.69 16 3.95 6.06"></path><path d="M14.31 16H2.83"></path><path d="m16.62 12-5.74 9.94"></path></svg>
+                    <span>Ambil Foto</span>
+                  </button>
+                </div>
+
+                <!-- Image Editor -->
+                <div id="editor-workzone" class="workzone-panel mt-4 hidden">
+                  <div class="editor-canvas-container">
+                    <canvas id="editor-canvas"></canvas>
+                  </div>
+                  <div class="canvas-controls-wrapper">
+                    <div class="filter-controls-group">
+                      <span class="control-label text-muted">Filter:</span>
+                      <div class="filter-buttons">
+                        <button class="filter-btn active" data-filter="original">Original</button>
+                        <button class="filter-btn" data-filter="grayscale">Abu-Abu</button>
+                        <button class="filter-btn" data-filter="document">Dokumen</button>
+                        <button class="filter-btn" data-filter="monochrome">B&amp;W</button>
+                      </div>
+                    </div>
+                    <div class="sliders-group mt-3">
+                      <div class="slider-control">
+                        <span class="text-muted">Kontras: <span id="contrast-val">0</span></span>
+                        <input type="range" id="contrast-slider" min="-100" max="100" value="0">
+                      </div>
+                      <div class="slider-control">
+                        <span class="text-muted">Kecerahan: <span id="brightness-val">0</span></span>
+                        <input type="range" id="brightness-slider" min="-100" max="100" value="0">
+                      </div>
+                    </div>
+                    <div class="actions-row-mini mt-3">
+                      <button type="button" class="btn btn-sm btn-secondary" id="add-page-btn" disabled="">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="plus-square" aria-hidden="true" class="lucide lucide-plus-square"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M8 12h8"></path><path d="M12 8v8"></path></svg><span>Tambah Halaman</span>
+                      </button>
+                      <button class="btn btn-sm btn-outline" id="rotate-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="rotate-cw" aria-hidden="true" class="lucide lucide-rotate-cw"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path></svg><span>Putar 90°</span>
+                      </button>
+                      <button class="btn btn-sm btn-outline-danger" id="reset-image-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="trash-2" aria-hidden="true" class="lucide lucide-trash-2"><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path><path d="M3 6h18"></path><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg><span>Ulangi</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Metadata Form -->
+            <div class="card scanner-metadata-card">
+              <h3 class="card-title">Informasi Dokumen &amp; OCR</h3>
+              <p class="card-desc text-muted mb-4">Isi metadata dokumen yang akan disimpan ke sistem</p>
+
+              <!-- OCR Section -->
+              <div class="ocr-section-card">
+                <div class="ocr-status-header">
+                  <div class="ocr-status-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="cpu" aria-hidden="true" class="lucide lucide-cpu ocr-icon"><path d="M12 20v2"></path><path d="M12 2v2"></path><path d="M17 20v2"></path><path d="M17 2v2"></path><path d="M2 12h2"></path><path d="M2 17h2"></path><path d="M2 7h2"></path><path d="M20 12h2"></path><path d="M20 17h2"></path><path d="M20 7h2"></path><path d="M7 20v2"></path><path d="M7 2v2"></path><rect x="4" y="4" width="16" height="16" rx="2"></rect><rect x="8" y="8" width="8" height="8" rx="1"></rect></svg>
+                    <span>Mesin OCR Tesseract</span>
+                  </div>
+                  <span class="ocr-status-badge badge-idle" id="ocr-status-badge">Menunggu Gambar</span>
+                </div>
+                <div class="ocr-actions-container mt-3">
+                  <button class="btn btn-secondary w-full justify-center" id="ocr-extract-btn" disabled="">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="text-cursor-input" aria-hidden="true" class="lucide lucide-text-cursor-input"><path d="M12 20h-1a2 2 0 0 1-2-2 2 2 0 0 1-2 2H6"></path><path d="M13 8h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7"></path><path d="M5 16H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1"></path><path d="M6 4h1a2 2 0 0 1 2 2 2 2 0 0 1 2-2h1"></path><path d="M9 6v12"></path></svg>
+                    <span>Ekstrak Teks (OCR)</span>
+                  </button>
+                </div>
+                <div class="ocr-progress-container hidden" id="ocr-progress-area">
+                  <div class="progress-bar-container">
+                    <div class="progress-bar-fill progress-glow" id="ocr-progress-bar" style="width: 0%;"></div>
+                  </div>
+                  <div class="flex-row-between text-xs text-muted mt-1">
+                    <span id="ocr-status-text">Memproses...</span>
+                    <span id="ocr-progress-percent">0%</span>
+                  </div>
+                </div>
+                <div class="form-group mt-3">
+                  <label for="ocr-extracted-text">Teks Hasil Ekstraksi</label>
+                  <textarea id="ocr-extracted-text" class="form-control font-mono text-sm" rows="5" placeholder="Teks OCR akan muncul di sini..."></textarea>
+                </div>
+              </div>
+
+              <!-- Metadata Form -->
+              <form id="doc-metadata-form" class="mt-4">
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label for="doc-number">Nomor Dokumen</label>
+                    <input type="text" id="doc-number" class="form-control" placeholder="Otomatis bila kosong">
+                  </div>
+                  <div class="form-group">
+                    <label for="doc-user">Nama Pengguna</label>
+                    <input type="text" id="doc-user" class="form-control" value="" required="">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="doc-title">Judul Dokumen <span class="text-danger">*</span></label>
+                  <input type="text" id="doc-title" class="form-control" placeholder="Contoh: Invoice Bulan Juli 2026" required="">
+                </div>
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label for="doc-category">Kategori <span class="text-danger">*</span></label>
+                    <select id="doc-category" class="form-control" required="">
+                      <option value="" disabled="" selected="">Pilih Kategori</option>
+                      <option value="Kwitansi/Struk">Kwitansi/Struk</option>
+                      <option value="Faktur/Invoice">Faktur/Invoice</option>
+                      <option value="Kontrak">Kontrak</option>
+                      <option value="Sertifikat">Sertifikat</option>
+                      <option value="Pribadi">Pribadi</option>
+                      <option value="Kerja">Kerja</option>
+                      <option value="Laporan">Laporan</option>
+                      <option value="Lainnya">Lainnya</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="doc-status">Status Dokumen</label>
+                    <select id="doc-status" class="form-control">
+                      <option value="Tersimpan">Tersimpan</option>
+                      <option value="Diproses">Diproses</option>
+                      <option value="Diarsipkan">Diarsipkan</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="doc-date">Tanggal Dokumen <span class="text-danger">*</span></label>
+                  <input type="date" id="doc-date" class="form-control" required="">
+                </div>
+                <div class="form-group">
+                  <label for="doc-tags">Tag (Pisahkan dengan koma)</label>
+                  <input type="text" id="doc-tags" class="form-control" placeholder="tag1, tag2, tag3">
+                </div>
+                <div class="form-group">
+                  <label for="doc-description">Catatan / Deskripsi</label>
+                  <textarea id="doc-description" class="form-control" rows="2" placeholder="Catatan tambahan..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary w-full justify-center mt-4 btn-glow" id="save-doc-btn" disabled="">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="save" aria-hidden="true" class="lucide lucide-save"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"></path><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"></path><path d="M7 3v4a1 1 0 0 0 1 1h7"></path></svg>
+                  <span>Simpan Dokumen ke BPKAScan</span>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+
+
+        <!-- ====== ACTIVITY LOGS TAB ====== -->
+        <div id="tab-logs" class="tab-panel">
+          <div class="card">
+            <div class="card-header flex-row-between">
+              <div>
+                <h3 class="card-title">Log Aktivitas Sistem</h3>
+                <p class="card-desc text-muted">Rekam jejak semua aksi scan, upload, download, dan hapus dokumen</p>
+              </div>
+              <div class="log-actions">
+                <select id="log-filter-action" class="custom-select-mini">
+                  <option value="all">Semua Aksi</option>
+                  <option value="upload">Upload</option>
+                  <option value="scan">Scan</option>
+                  <option value="download">Download</option>
+                  <option value="delete">Hapus</option>
+                  <option value="login">Login</option>
+                  <option value="logout">Logout</option>
+                </select>
+                <button class="btn btn-outline btn-sm" id="export-logs-btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="download" aria-hidden="true" class="lucide lucide-download"><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path></svg>
+                  <span>Ekspor CSV</span>
+                </button>
+                <button class="btn btn-outline-danger btn-sm" id="clear-logs-btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="trash-2" aria-hidden="true" class="lucide lucide-trash-2"><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path><path d="M3 6h18"></path><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                  <span>Hapus Log</span>
+                </button>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="doc-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Waktu</th>
+                    <th>Pengguna</th>
+                    <th>Aksi</th>
+                    <th>Dokumen / Target</th>
+                    <th>Detail</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="logs-table-body">
+                  <tr class="empty-row">
+                    <td colspan="7" class="text-center text-muted">Belum ada aktivitas yang dicatat.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ====== SETTINGS TAB ====== -->
+        <div id="tab-settings" class="tab-panel">
+          <div class="settings-grid">
+
+            <!-- Profil Pengguna -->
+            <div class="card settings-section-card">
+              <h3 class="card-title"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="user-cog" aria-hidden="true" class="lucide lucide-user-cog"><path d="M10 15H6a4 4 0 0 0-4 4v2"></path><path d="m14.305 16.53.923-.382"></path><path d="m15.228 13.852-.923-.383"></path><path d="m16.852 12.228-.383-.923"></path><path d="m16.852 17.772-.383.924"></path><path d="m19.148 12.228.383-.923"></path><path d="m19.53 18.696-.382-.924"></path><path d="m20.772 13.852.924-.383"></path><path d="m20.772 16.148.924.383"></path><circle cx="18" cy="15" r="3"></circle><circle cx="9" cy="7" r="4"></circle></svg> Profil &amp; Akun</h3>
+              <div class="user-accounts-list" id="user-accounts-list">
+                <!-- Rendered by JS -->
+              </div>
+            </div>
+
+            <!-- Scanner Config -->
+            <div class="card settings-section-card">
+              <h3 class="card-title"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="printer" aria-hidden="true" class="lucide lucide-printer"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"></path><rect x="6" y="14" width="12" height="8" rx="1"></rect></svg> Konfigurasi Scanner</h3>
+              <p class="text-muted text-sm mb-4">Tambahkan dan kelola scanner yang terhubung ke sistem.</p>
+              <div id="scanner-config-list">
+                <div class="scanner-config-item-empty text-muted text-sm">Belum ada scanner terdaftar.</div>
+              </div>
+              <button class="btn btn-outline btn-sm mt-4" id="add-scanner-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="plus" aria-hidden="true" class="lucide lucide-plus"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+                <span>Tambah Scanner</span>
+              </button>
+            </div>
+
+            <!-- Backup & Restore -->
+            <div class="card settings-section-card">
+              <h3 class="card-title"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="database" aria-hidden="true" class="lucide lucide-database"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5V19A9 3 0 0 0 21 19V5"></path><path d="M3 12A9 3 0 0 0 21 12"></path></svg> Backup &amp; Restore</h3>
+              <p class="text-muted text-sm mb-4">Ekspor atau impor data dokumen sebagai file JSON backup.</p>
+              <div class="flex-row-gap-3">
+                <button class="btn btn-outline" id="settings-export-btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="download" aria-hidden="true" class="lucide lucide-download"><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path></svg><span>Ekspor JSON</span>
+                </button>
+                <button class="btn btn-outline" id="settings-import-trigger-btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="upload" aria-hidden="true" class="lucide lucide-upload"><path d="M12 3v12"></path><path d="m17 8-5-5-5 5"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path></svg><span>Impor JSON</span>
+                </button>
+                <input type="file" id="settings-import-input" accept=".json" class="hidden">
+              </div>
+            </div>
+
+            <!-- Danger Zone -->
+            <div class="card settings-section-card danger-zone">
+              <h3 class="card-title text-danger"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="alert-triangle" aria-hidden="true" class="lucide lucide-alert-triangle"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg> Danger Zone</h3>
+              <p class="text-muted text-sm mb-4">Tindakan berikut bersifat permanen dan tidak dapat dibatalkan.</p>
+              <div class="flex-row-gap-3">
+                <button class="btn btn-outline-danger" id="settings-clear-btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="trash-2" aria-hidden="true" class="lucide lucide-trash-2"><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path><path d="M3 6h18"></path><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg><span>Hapus Semua Dokumen</span>
+                </button>
+                <button class="btn btn-outline-danger" id="clear-all-logs-settings-btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="file-x" aria-hidden="true" class="lucide lucide-file-x"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"></path><path d="M14 2v5a1 1 0 0 0 1 1h5"></path><path d="m14.5 12.5-5 5"></path><path d="m9.5 12.5 5 5"></path></svg><span>Hapus Semua Log</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- About -->
+            <div class="card settings-section-card">
+              <h3 class="card-title"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="info" aria-hidden="true" class="lucide lucide-info"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg> Tentang BPKAScan</h3>
+              <p class="text-muted text-sm mb-3">Aplikasi manajemen dokumen scan profesional dengan OCR, integrasi scanner fisik, upload PDF, dan log aktivitas lengkap.</p>
+              <div class="system-specs text-xs text-muted">
+                <div>Versi: <strong>2.0.0</strong></div>
+                <div>OCR Engine: <strong>Tesseract.js v5 (Indonesia)</strong></div>
+                <div>Storage: <strong>IndexedDB via Dexie.js</strong></div>
+                <div>Scanner Protocol: <strong>WebUSB / SANE / TWAIN via Agent</strong></div>
+                <div>Status: <span class="text-success">Aktif &amp; Berjalan</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ===== DOCUMENT DETAIL MODAL ===== -->
+  <div class="modal-backdrop" id="doc-detail-modal">
+    <div class="modal-container modal-xl">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3 class="modal-title" id="modal-doc-title">Nama Dokumen</h3>
+          <span class="badge" id="modal-doc-category">Kategori</span>
+          <span class="badge badge-source" id="modal-doc-source">Sumber</span>
+        </div>
+        <button class="modal-close-btn" id="close-detail-modal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" class="lucide lucide-x"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+      </div>
+      <div class="modal-body doc-modal-grid">
+        <div class="modal-doc-preview">
+          <img id="modal-doc-img" src="http://localhost:3000/" alt="Scan Preview">
+          <iframe id="modal-doc-pdf" class="hidden" title="Pratinjau PDF" src="./BPKAScan — Sistem Manajemen Dokumen Scan_files/saved_resource.html"></iframe>
+          <div class="pdf-placeholder hidden" id="modal-pdf-placeholder">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="file-text" aria-hidden="true" class="lucide lucide-file-text"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"></path><path d="M14 2v5a1 1 0 0 0 1 1h5"></path><path d="M10 9H8"></path><path d="M16 13H8"></path><path d="M16 17H8"></path></svg>
+            <p>File PDF</p>
+            <span id="modal-pdf-name" class="text-muted text-sm"></span>
+          </div>
+        </div>
+        <div class="modal-doc-details">
+          <div class="metadata-block">
+            <h4 class="details-section-title">Informasi Dokumen</h4>
+            <div class="details-meta-grid">
+              <div class="meta-item">
+                <span class="meta-item-label text-muted">Nomor Dokumen:</span>
+                <span class="meta-item-value" id="modal-doc-number">-</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-item-label text-muted">Nama File:</span>
+                <span class="meta-item-value" id="modal-doc-filename">-</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-item-label text-muted">Format / Status:</span>
+                <span class="meta-item-value" id="modal-doc-format-status">-</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-item-label text-muted">Tanggal Scan:</span>
+                <span class="meta-item-value" id="modal-doc-scan-date">-</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-item-label text-muted">Ukuran File:</span>
+                <span class="meta-item-value" id="modal-doc-size">-</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-item-label text-muted">Pengguna:</span>
+                <span class="meta-item-value" id="modal-doc-uploader">-</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-item-label text-muted">Jumlah Halaman:</span>
+                <span class="meta-item-value" id="modal-doc-page-count">-</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-item-label text-muted">Tags:</span>
+                <div class="tags-container" id="modal-doc-tags">-</div>
+              </div>
+            </div>
+            <div class="meta-item mt-3">
+              <span class="meta-item-label text-muted">Catatan:</span>
+              <p class="meta-item-desc" id="modal-doc-desc">-</p>
+            </div>
+          </div>
+          <div class="extracted-text-block mt-4">
+            <div class="flex-row-between mb-2">
+              <h4 class="details-section-title mb-0">Teks Hasil Ekstraksi</h4>
+              <button class="btn btn-xs btn-outline" id="edit-modal-ocr-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="edit-3" aria-hidden="true" class="lucide lucide-edit-3"><path d="M13 21h8"></path><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path></svg>
+                <span id="edit-ocr-btn-text">Edit Teks</span>
+              </button>
+            </div>
+            <textarea id="modal-doc-ocr-text" class="form-control font-mono text-sm" rows="8" readonly=""></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer flex-row-between">
+        <button class="btn btn-outline-danger" id="delete-doc-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="trash-2" aria-hidden="true" class="lucide lucide-trash-2"><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path><path d="M3 6h18"></path><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg><span>Hapus Dokumen</span>
+        </button>
+        <div class="flex-row-gap-2">
+          <button class="btn btn-outline" id="copy-doc-text-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="copy" aria-hidden="true" class="lucide lucide-copy"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span>Salin Teks</span>
+          </button>
+          <button class="btn btn-outline" id="share-doc-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="share-2" aria-hidden="true" class="lucide lucide-share-2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg><span>Bagikan</span>
+          </button>
+          <button class="btn btn-primary btn-glow" id="download-pdf-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="file-down" aria-hidden="true" class="lucide lucide-file-down"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"></path><path d="M14 2v5a1 1 0 0 0 1 1h5"></path><path d="M12 18v-6"></path><path d="m9 15 3 3 3-3"></path></svg><span>Unduh PDF</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ADD SCANNER MODAL ===== -->
+  <div class="modal-backdrop" id="add-scanner-modal">
+    <div class="modal-container modal-sm">
+      <div class="modal-header">
+        <h3 class="modal-title">Tambah Scanner</h3>
+        <button class="modal-close-btn" id="close-add-scanner-modal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" aria-hidden="true" class="lucide lucide-x"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="new-scanner-name">Nama Scanner</label>
+          <input type="text" id="new-scanner-name" class="form-control" placeholder="Contoh: Canon DR-C240">
+        </div>
+        <div class="form-group">
+          <label for="new-scanner-device">Device ID / Port</label>
+          <input type="text" id="new-scanner-device" class="form-control" placeholder="Contoh: usb://Canon/DR-C240">
+        </div>
+        <div class="form-group">
+          <label for="new-scanner-type">Protokol</label>
+          <select id="new-scanner-type" class="form-control">
+            <option value="SANE">SANE (Linux)</option>
+            <option value="WIA">WIA (Windows)</option>
+            <option value="TWAIN">TWAIN (Universal)</option>
+            <option value="WebUSB">WebUSB (Browser)</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" id="cancel-add-scanner">Batal</button>
+        <button class="btn btn-primary" id="save-add-scanner">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="plus" aria-hidden="true" class="lucide lucide-plus"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg><span>Tambah Scanner</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TOAST NOTIFICATION ===== -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- ===== CONFIRM DIALOG ===== -->
+  <div class="modal-backdrop" id="confirm-modal">
+    <div class="modal-container modal-sm">
+      <div class="modal-header">
+        <h3 class="modal-title" id="confirm-title">Konfirmasi</h3>
+      </div>
+      <div class="modal-body">
+        <p id="confirm-message" class="text-muted">Apakah Anda yakin?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" id="confirm-cancel">Batal</button>
+        <button class="btn btn-outline-danger" id="confirm-ok">Ya, Lanjutkan</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./BPKAScan — Sistem Manajemen Dokumen Scan_files/app.js"></script>
+
+
+</body></html>
